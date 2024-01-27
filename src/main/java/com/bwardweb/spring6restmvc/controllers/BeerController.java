@@ -3,6 +3,7 @@ package com.bwardweb.spring6restmvc.controllers;
 import com.bwardweb.spring6restmvc.model.Beer;
 import com.bwardweb.spring6restmvc.services.BeerService;
 import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.springframework.http.HttpHeaders;
@@ -16,7 +17,7 @@ import java.util.List;
 import java.util.UUID;
 
 @Slf4j
-@AllArgsConstructor
+@RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/v1/beer")
 public class BeerController {
@@ -38,10 +39,10 @@ public class BeerController {
     }
 
     @RequestMapping(value = "/{beerId}", method = RequestMethod.GET)
-    public String getBeerById(@PathVariable("beerId") UUID beerid){
+    public Beer getBeerById(@PathVariable("beerId") UUID beerid){
         log.debug("Get beer by id in controller was called for id: " + beerid);
 
-        return beerService.getBeerById(beerid).toString();
+        return beerService.getBeerById(beerid);
     }
 
     @PutMapping("{beerId}")

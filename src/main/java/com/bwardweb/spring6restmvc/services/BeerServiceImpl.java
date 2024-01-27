@@ -62,7 +62,7 @@ public class BeerServiceImpl implements BeerService{
 
         beerMap.put(beer1.getId(),beer1);
         beerMap.put(beer2.getId(),beer2);
-        beerMap.put(beer2.getId(),beer3);
+        beerMap.put(beer3.getId(),beer3);
 
     }
 
