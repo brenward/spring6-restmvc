@@ -1,5 +1,6 @@
 package com.bwardweb.spring6restmvc.controllers;
 
+import com.bwardweb.spring6restmvc.exception.NotFoundException;
 import com.bwardweb.spring6restmvc.model.Customer;
 import com.bwardweb.spring6restmvc.services.CustomerService;
 import org.springframework.http.HttpHeaders;
@@ -9,6 +10,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @RestController
@@ -38,7 +40,7 @@ public class CustomerController {
 
     @RequestMapping(value = CUSTOMER_PATH_ID, method = RequestMethod.GET)
     public Customer getCustomeryId(@PathVariable("customerId") UUID customerId){
-        return customerService.getById(customerId);
+        return customerService.getById(customerId).orElseThrow(NotFoundException::new);
     }
 
     @PutMapping(CUSTOMER_PATH_ID)

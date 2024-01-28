@@ -1,5 +1,6 @@
 package com.bwardweb.spring6restmvc.controllers;
 
+import com.bwardweb.spring6restmvc.exception.NotFoundException;
 import com.bwardweb.spring6restmvc.model.Beer;
 import com.bwardweb.spring6restmvc.services.BeerService;
 import lombok.AllArgsConstructor;
@@ -46,7 +47,7 @@ public class BeerController {
     public Beer getBeerById(@PathVariable("beerId") UUID beerid){
         log.debug("Get beer by id in controller was called for id: " + beerid);
 
-        return beerService.getBeerById(beerid);
+        return beerService.getBeerById(beerid).orElseThrow(NotFoundException::new);
     }
 
     @PutMapping(BEER_PATH_ID)
