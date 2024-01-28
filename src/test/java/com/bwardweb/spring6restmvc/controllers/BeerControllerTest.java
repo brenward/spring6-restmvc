@@ -1,5 +1,6 @@
 package com.bwardweb.spring6restmvc.controllers;
 
+import com.bwardweb.spring6restmvc.exception.NotFoundException;
 import com.bwardweb.spring6restmvc.model.Beer;
 import com.bwardweb.spring6restmvc.services.BeerService;
 import com.bwardweb.spring6restmvc.services.BeerServiceImpl;
@@ -15,10 +16,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -88,7 +86,7 @@ class BeerControllerTest {
     void testGetBeerById() throws Exception {
         Beer beer = beerServiceImpl.listBeers().get(0);
 
-        given(beerService.getBeerById(beer.getId())).willReturn(beer);
+        given(beerService.getBeerById(beer.getId())).willReturn(Optional.of(beer));
 
         mockMvc.perform(get(BeerController.BEER_PATH_ID, beer.getId())
                 .accept(MediaType.APPLICATION_JSON))
@@ -97,6 +95,14 @@ class BeerControllerTest {
                 .andExpect(jsonPath("$.id",is(beer.getId().toString())))
                 .andExpect(jsonPath("$.beerName", is(beer.getBeerName())));
 
+    }
+
+    @Test
+    void getBeerByIdNotFound() throws Exception {
+        given(beerService.getBeerById(any(UUID.class))).willReturn(Optional.empty());
+
+        mockMvc.perform(get(BeerController.BEER_PATH_ID,UUID.randomUUID()))
+                .andExpect(status().isNotFound());
     }
 
     @Test

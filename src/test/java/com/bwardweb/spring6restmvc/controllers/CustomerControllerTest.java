@@ -1,5 +1,6 @@
 package com.bwardweb.spring6restmvc.controllers;
 
+import com.bwardweb.spring6restmvc.exception.NotFoundException;
 import com.bwardweb.spring6restmvc.model.Customer;
 import com.bwardweb.spring6restmvc.services.CustomerService;
 import com.bwardweb.spring6restmvc.services.CustomerServiceImpl;
@@ -17,6 +18,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -94,10 +96,18 @@ class CustomerControllerTest {
     }
 
     @Test
+    void testCustomerNotFound() throws Exception {
+        given(customerService.getById(any(UUID.class))).willReturn(Optional.empty());
+
+        mockMvc.perform(get(CustomerController.CUSTOMER_PATH_ID, UUID.randomUUID()))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
     void testGetCustomeryId() throws Exception {
         Customer cust = customerServiceImpl.listCustomers().get(0);
 
-        given(customerService.getById(cust.getId())).willReturn(cust);
+        given(customerService.getById(cust.getId())).willReturn(Optional.of(cust));
 
         mockMvc.perform(get(CustomerController.CUSTOMER_PATH_ID, cust.getId().toString())
                         .accept(MediaType.APPLICATION_JSON))
