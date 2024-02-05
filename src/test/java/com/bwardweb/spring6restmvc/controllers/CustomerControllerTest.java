@@ -139,6 +139,8 @@ class CustomerControllerTest {
         Map<String,Object> customerMap = new HashMap<>();
         customerMap.put("customerName","New Name");
 
+        given(customerService.patchById(any(),any())).willReturn(Optional.of(cust));
+
         mockMvc.perform(patch(CustomerController.CUSTOMER_PATH_ID, cust.getId())
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
