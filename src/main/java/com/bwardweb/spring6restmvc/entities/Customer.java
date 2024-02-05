@@ -23,7 +23,7 @@ public class Customer {
     private String customerName;
 
     @Version
-    private String version;
+    private Integer version;
 
     private LocalDateTime createdDate;
     private LocalDateTime lastModifiedDate;
