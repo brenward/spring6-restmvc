@@ -2,6 +2,7 @@ package com.bwardweb.spring6restmvc.controllers;
 
 import com.bwardweb.spring6restmvc.entities.Customer;
 import com.bwardweb.spring6restmvc.exception.NotFoundException;
+import com.bwardweb.spring6restmvc.mappers.CustomerMapper;
 import com.bwardweb.spring6restmvc.model.BeerDTO;
 import com.bwardweb.spring6restmvc.model.CustomerDTO;
 import com.bwardweb.spring6restmvc.repostitories.BeerRepository;
@@ -27,6 +28,9 @@ class CustomerControllerIT {
 
     @Autowired
     CustomerRepository customerRepository;
+
+    @Autowired
+    CustomerMapper customerMapper;
 
     @Test
     void testListCustomers(){
@@ -75,6 +79,29 @@ class CustomerControllerIT {
         Customer customer = customerRepository.findById(savedCustomerId).get();
         assertThat(customer).isNotNull();
 
+    }
+
+    @Test
+    void testUpdateExistingCustomer(){
+        Customer customer = customerRepository.findAll().get(0);
+        CustomerDTO customerDTO = customerMapper.customerToCustomerDto(customer);
+        customerDTO.setId(null);
+        customerDTO.setVersion(null);
+        final String updatedName = "UPDATED";
+        customerDTO.setCustomerName(updatedName);
+
+        ResponseEntity responseEntity = controller.updateById(customer.getId(),customerDTO);
+        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
+
+        Customer updatedCustomer = customerRepository.findById(customer.getId()).get();
+        assertThat(updatedCustomer.getCustomerName()).isEqualTo(updatedName);
+    }
+
+    @Test
+    void testUpdateCustomerNotFound(){
+        assertThrows(NotFoundException.class, () -> {
+           controller.updateById(UUID.randomUUID(),CustomerDTO.builder().build());
+        });
     }
 
 }
