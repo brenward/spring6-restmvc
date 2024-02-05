@@ -19,7 +19,7 @@ public class Customer {
     @GenericGenerator(name = "UUID", strategy="org.hibernate.id.UUIDGenerator")
     @Column(length = 36, columnDefinition = "varchar", updatable = false, nullable = false)
     private UUID id;
-    
+
     private String customerName;
 
     @Version
