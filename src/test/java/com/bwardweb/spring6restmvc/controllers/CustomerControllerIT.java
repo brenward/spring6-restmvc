@@ -9,6 +9,8 @@ import com.bwardweb.spring6restmvc.repostitories.CustomerRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -56,6 +58,23 @@ class CustomerControllerIT {
         assertThrows(NotFoundException.class,() -> {
             controller.getCustomeryId(UUID.randomUUID());
         });
+    }
+
+    @Rollback
+    @Transactional
+    @Test
+    void testSaveNewCustomer(){
+        CustomerDTO customerDTO = CustomerDTO.builder().customerName("New Customer").build();
+        ResponseEntity responseEntity = controller.handlePost(customerDTO);
+
+        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.CREATED);
+        assertThat(responseEntity.getHeaders().getLocation()).isNotNull();
+        String[] locationUUID = responseEntity.getHeaders().getLocation().getPath().split("/");
+        UUID savedCustomerId = UUID.fromString(locationUUID[4]);
+
+        Customer customer = customerRepository.findById(savedCustomerId).get();
+        assertThat(customer).isNotNull();
+
     }
 
 }
