@@ -1,20 +1,20 @@
 package com.bwardweb.spring6restmvc.services;
 
-import com.bwardweb.spring6restmvc.model.Customer;
+import com.bwardweb.spring6restmvc.model.CustomerDTO;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
 public interface CustomerService {
-    Optional<Customer> getById(UUID id);
-    List<Customer> listCustomers();
+    Optional<CustomerDTO> getById(UUID id);
+    List<CustomerDTO> listCustomers();
 
-    Customer createCustomer(Customer customer);
+    CustomerDTO createCustomer(CustomerDTO customer);
 
-    void updateById(UUID customerId, Customer customer);
+    Optional<CustomerDTO> updateById(UUID customerId, CustomerDTO customer);
 
-    void deleteById(UUID customerId);
+    Boolean deleteById(UUID customerId);
 
-    void patchById(UUID customerId, Customer customer);
+    Optional<CustomerDTO> patchById(UUID customerId, CustomerDTO customer);
 }

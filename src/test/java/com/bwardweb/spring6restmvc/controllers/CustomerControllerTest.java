@@ -1,10 +1,8 @@
 package com.bwardweb.spring6restmvc.controllers;
 
-import com.bwardweb.spring6restmvc.exception.NotFoundException;
-import com.bwardweb.spring6restmvc.model.Customer;
+import com.bwardweb.spring6restmvc.model.CustomerDTO;
 import com.bwardweb.spring6restmvc.services.CustomerService;
 import com.bwardweb.spring6restmvc.services.CustomerServiceImpl;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -45,7 +43,7 @@ class CustomerControllerTest {
     ArgumentCaptor<UUID> uuidArgumentCaptor;
 
     @Captor
-    ArgumentCaptor<Customer> customerArgumentCaptor;
+    ArgumentCaptor<CustomerDTO> customerArgumentCaptor;
 
     CustomerServiceImpl customerServiceImpl;
 
@@ -56,11 +54,11 @@ class CustomerControllerTest {
 
     @Test
     void testCreateCustomer() throws Exception {
-        Customer customer = customerServiceImpl.listCustomers().get(0);
+        CustomerDTO customer = customerServiceImpl.listCustomers().get(0);
         customer.setId(null);
         customer.setVersion(null);
 
-        given(customerService.createCustomer(any(Customer.class))).willReturn(customerServiceImpl.listCustomers().get(1));
+        given(customerService.createCustomer(any(CustomerDTO.class))).willReturn(customerServiceImpl.listCustomers().get(1));
 
         mockMvc.perform(post(CustomerController.CUSTOMER_PATH)
                         .accept(MediaType.APPLICATION_JSON)
@@ -72,7 +70,9 @@ class CustomerControllerTest {
 
     @Test
     void testUpdateCustomer() throws Exception {
-        Customer customer = customerServiceImpl.listCustomers().get(0);
+        CustomerDTO customer = customerServiceImpl.listCustomers().get(0);
+
+        given(customerService.updateById(any(),any())).willReturn(Optional.of(customer));
 
         mockMvc.perform(put(CustomerController.CUSTOMER_PATH_ID, customer.getId())
                         .accept(MediaType.APPLICATION_JSON)
@@ -80,7 +80,7 @@ class CustomerControllerTest {
                         .content(objectMapper.writeValueAsString(customer)))
                 .andExpect(status().isNoContent());
 
-        verify(customerService).updateById(any(UUID.class), any(Customer.class));
+        verify(customerService).updateById(any(UUID.class), any(CustomerDTO.class));
 
     }
 
@@ -105,7 +105,7 @@ class CustomerControllerTest {
 
     @Test
     void testGetCustomeryId() throws Exception {
-        Customer cust = customerServiceImpl.listCustomers().get(0);
+        CustomerDTO cust = customerServiceImpl.listCustomers().get(0);
 
         given(customerService.getById(cust.getId())).willReturn(Optional.of(cust));
 
@@ -118,7 +118,9 @@ class CustomerControllerTest {
 
     @Test
     void testDeleteCustomer() throws Exception {
-        Customer cust = customerServiceImpl.listCustomers().get(0);
+        CustomerDTO cust = customerServiceImpl.listCustomers().get(0);
+
+        given(customerService.deleteById(any())).willReturn(true);
 
         mockMvc.perform(delete(CustomerController.CUSTOMER_PATH_ID, cust.getId())
                         .accept(MediaType.APPLICATION_JSON))
@@ -132,10 +134,12 @@ class CustomerControllerTest {
 
     @Test
     void testPatchCustomer() throws Exception {
-        Customer cust = customerServiceImpl.listCustomers().get(0);
+        CustomerDTO cust = customerServiceImpl.listCustomers().get(0);
 
         Map<String,Object> customerMap = new HashMap<>();
         customerMap.put("customerName","New Name");
+
+        given(customerService.patchById(any(),any())).willReturn(Optional.of(cust));
 
         mockMvc.perform(patch(CustomerController.CUSTOMER_PATH_ID, cust.getId())
                         .accept(MediaType.APPLICATION_JSON)
