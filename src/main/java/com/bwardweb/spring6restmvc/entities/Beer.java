@@ -2,6 +2,8 @@ package com.bwardweb.spring6restmvc.entities;
 
 import com.bwardweb.spring6restmvc.model.BeerStyle;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
 
@@ -25,10 +27,21 @@ public class Beer {
     @Version
     private Integer version;
 
+    @NonNull
+    @NotBlank
+    @Size(max = 50)
+    @Column(length = 50)
     private String beerName;
+
+    @NonNull
     private BeerStyle beerStyle;
+
+    @NonNull
+    @NotBlank
     private String upc;
     private Integer quantityOnHand;
+
+    @NonNull
     private BigDecimal price;
     private LocalDateTime createdDate;
     private LocalDateTime updateDate;
