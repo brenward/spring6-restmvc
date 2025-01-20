@@ -4,6 +4,7 @@ import com.bwardweb.spring6restmvc.entities.Beer;
 import com.bwardweb.spring6restmvc.exception.NotFoundException;
 import com.bwardweb.spring6restmvc.mappers.BeerMapper;
 import com.bwardweb.spring6restmvc.model.BeerDTO;
+import com.bwardweb.spring6restmvc.model.BeerStyle;
 import com.bwardweb.spring6restmvc.repostitories.BeerRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
@@ -110,7 +111,7 @@ class BeerControllerIT {
     @Transactional
     @Test
     void testSaveNewBeer(){
-        BeerDTO beerDTO = BeerDTO.builder().beerName("New Beer").build();
+        BeerDTO beerDTO = BeerDTO.builder().beerName("New Beer").beerStyle(BeerStyle.LAGER).build();
 
         ResponseEntity responseEntity = controller.handlePost(beerDTO);
 
