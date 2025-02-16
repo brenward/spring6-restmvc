@@ -3,13 +3,13 @@ package com.bwardweb.spring6restmvc.services;
 import com.bwardweb.spring6restmvc.entities.Beer;
 import com.bwardweb.spring6restmvc.mappers.BeerMapper;
 import com.bwardweb.spring6restmvc.model.BeerDTO;
+import com.bwardweb.spring6restmvc.model.BeerStyle;
 import com.bwardweb.spring6restmvc.repostitories.BeerRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -25,11 +25,13 @@ public class BeerServiceJPA implements BeerService{
     private final BeerMapper beerMapper;
 
     @Override
-    public List<BeerDTO> listBeers(String beerName) {
+    public List<BeerDTO> listBeers(String beerName, BeerStyle beerStyle) {
         List<Beer> beerList;
 
         if(StringUtils.hasText(beerName)){
             beerList = listBeersByName(beerName);
+        }else if(beerStyle != null) {
+            beerList = listBeersByStyle(beerStyle);
         }else {
             beerList = beerRepository.findAll();
         }
@@ -41,6 +43,10 @@ public class BeerServiceJPA implements BeerService{
 
     List<Beer> listBeersByName(String beerName){
         return beerRepository.findAllByBeerNameIsLikeIgnoreCase("%" + beerName + "%");
+    }
+
+    List<Beer> listBeersByStyle(BeerStyle beerStyle){
+        return beerRepository.findAllByBeerStyle(beerStyle);
     }
 
     @Override
