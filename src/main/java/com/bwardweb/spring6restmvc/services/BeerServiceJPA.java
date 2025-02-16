@@ -1,5 +1,6 @@
 package com.bwardweb.spring6restmvc.services;
 
+import com.bwardweb.spring6restmvc.entities.Beer;
 import com.bwardweb.spring6restmvc.mappers.BeerMapper;
 import com.bwardweb.spring6restmvc.model.BeerDTO;
 import com.bwardweb.spring6restmvc.repostitories.BeerRepository;
@@ -8,6 +9,7 @@ import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -23,11 +25,22 @@ public class BeerServiceJPA implements BeerService{
     private final BeerMapper beerMapper;
 
     @Override
-    public List<BeerDTO> listBeers() {
-        return beerRepository.findAll()
-                .stream()
+    public List<BeerDTO> listBeers(String beerName) {
+        List<Beer> beerList;
+
+        if(StringUtils.hasText(beerName)){
+            beerList = listBeersByName(beerName);
+        }else {
+            beerList = beerRepository.findAll();
+        }
+
+        return beerList.stream()
                 .map(beerMapper::beerToBeerDto)
                 .collect(Collectors.toList());
+    }
+
+    List<Beer> listBeersByName(String beerName){
+        return beerRepository.findAllByBeerNameIsLikeIgnoreCase("%" + beerName + "%");
     }
 
     @Override
