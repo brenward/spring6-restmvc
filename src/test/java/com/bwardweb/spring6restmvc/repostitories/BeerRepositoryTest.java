@@ -3,14 +3,13 @@ package com.bwardweb.spring6restmvc.repostitories;
 import com.bwardweb.spring6restmvc.bootstrap.BootStrapData;
 import com.bwardweb.spring6restmvc.entities.Beer;
 import com.bwardweb.spring6restmvc.model.BeerStyle;
-import com.bwardweb.spring6restmvc.services.BeerCsvService;
 import com.bwardweb.spring6restmvc.services.BeerCsvServiceImpl;
 import jakarta.validation.ConstraintViolationException;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
+import org.springframework.data.domain.Page;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -26,23 +25,23 @@ class BeerRepositoryTest {
 
     @Test
     void testListBeerByName(){
-        List<Beer> list = beerRepository.findAllByBeerNameIsLikeIgnoreCase("%IPA%");
+        Page<Beer> list = beerRepository.findAllByBeerNameIsLikeIgnoreCase("%IPA%", null);
 
-        assertThat(list.size()).isEqualTo(336);
+        assertThat(list.getContent().size()).isEqualTo(336);
     }
 
     @Test
     void testListBeerByNameAndStyle(){
-        List<Beer> list = beerRepository.findAllByBeerNameIsLikeIgnoreCaseAndBeerStyle("%IPA%", BeerStyle.IPA);
+        Page<Beer> list = beerRepository.findAllByBeerNameIsLikeIgnoreCaseAndBeerStyle("%IPA%", BeerStyle.IPA, null);
 
-        assertThat(list.size()).isEqualTo(310);
+        assertThat(list.getContent().size()).isEqualTo(310);
     }
 
     @Test
     void testListBeerByStyle(){
-        List<Beer> list = beerRepository.findAllByBeerStyle(BeerStyle.IPA);
+        Page<Beer> list = beerRepository.findAllByBeerStyle(BeerStyle.IPA, null);
 
-        assertThat(list.size()).isEqualTo(547);
+        assertThat(list.getContent().size()).isEqualTo(547);
     }
 
     @Test
