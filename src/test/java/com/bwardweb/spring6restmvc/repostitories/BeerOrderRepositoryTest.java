@@ -1,11 +1,13 @@
 package com.bwardweb.spring6restmvc.repostitories;
 
 import com.bwardweb.spring6restmvc.entities.Beer;
+import com.bwardweb.spring6restmvc.entities.BeerOrder;
 import com.bwardweb.spring6restmvc.entities.Customer;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.transaction.annotation.Transactional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -29,12 +31,15 @@ class BeerOrderRepositoryTest {
         beer = beerRepository.findAll().get(0);
     }
 
+    @Transactional
     @Test
     void testBeerOrders(){
-        System.out.println(beerOrderRepository.count());
-        System.out.println(customerRepository.count());
-        System.out.println(beerRepository.count());
-        System.out.println(customer.getCustomerName());
-        System.out.println(beer.getBeerName());
+        BeerOrder beerOrder = BeerOrder.builder()
+                .customerRef("Test Order")
+                .customer(customer)
+                .build();
+
+        BeerOrder savedBeerOrder = beerOrderRepository.save(beerOrder);
+        System.out.println(savedBeerOrder.getCustomerRef());
     }
 }
