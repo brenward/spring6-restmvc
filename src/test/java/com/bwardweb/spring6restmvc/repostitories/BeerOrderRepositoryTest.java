@@ -2,6 +2,7 @@ package com.bwardweb.spring6restmvc.repostitories;
 
 import com.bwardweb.spring6restmvc.entities.Beer;
 import com.bwardweb.spring6restmvc.entities.BeerOrder;
+import com.bwardweb.spring6restmvc.entities.BeerOrderShipment;
 import com.bwardweb.spring6restmvc.entities.Customer;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -37,6 +38,9 @@ class BeerOrderRepositoryTest {
         BeerOrder beerOrder = BeerOrder.builder()
                 .customerRef("Test Order")
                 .customer(customer)
+                .beerOrderShipment(BeerOrderShipment.builder()
+                        .trackingNumber("1234r")
+                        .build())
                 .build();
 
         BeerOrder savedBeerOrder = beerOrderRepository.save(beerOrder);
