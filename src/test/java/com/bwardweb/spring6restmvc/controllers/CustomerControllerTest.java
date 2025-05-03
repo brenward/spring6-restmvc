@@ -1,5 +1,6 @@
 package com.bwardweb.spring6restmvc.controllers;
 
+import com.bwardweb.spring6restmvc.config.SpringSecurityConfig;
 import com.bwardweb.spring6restmvc.model.CustomerDTO;
 import com.bwardweb.spring6restmvc.services.CustomerService;
 import com.bwardweb.spring6restmvc.services.CustomerServiceImpl;
@@ -11,6 +12,7 @@ import org.mockito.Captor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -23,11 +25,13 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.httpBasic;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static org.hamcrest.core.Is.is;
 
 @WebMvcTest(CustomerController.class)
+@Import(SpringSecurityConfig.class)
 class CustomerControllerTest {
 
     @Autowired
@@ -61,6 +65,7 @@ class CustomerControllerTest {
         given(customerService.createCustomer(any(CustomerDTO.class))).willReturn(customerServiceImpl.listCustomers().get(1));
 
         mockMvc.perform(post(CustomerController.CUSTOMER_PATH)
+                        .with(BeerControllerTest.jwtRequestPostProcessor)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(customer)))
@@ -75,6 +80,7 @@ class CustomerControllerTest {
         given(customerService.updateById(any(),any())).willReturn(Optional.of(customer));
 
         mockMvc.perform(put(CustomerController.CUSTOMER_PATH_ID, customer.getId())
+                        .with(BeerControllerTest.jwtRequestPostProcessor)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(customer)))
@@ -89,7 +95,9 @@ class CustomerControllerTest {
     void testGetCustomers() throws Exception {
         given(customerService.listCustomers()).willReturn(customerServiceImpl.listCustomers());
 
-        mockMvc.perform(get(CustomerController.CUSTOMER_PATH).accept(MediaType.APPLICATION_JSON))
+        mockMvc.perform(get(CustomerController.CUSTOMER_PATH)
+                        .with(BeerControllerTest.jwtRequestPostProcessor)
+                        .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.length()",is(3)));
@@ -99,7 +107,8 @@ class CustomerControllerTest {
     void testCustomerNotFound() throws Exception {
         given(customerService.getById(any(UUID.class))).willReturn(Optional.empty());
 
-        mockMvc.perform(get(CustomerController.CUSTOMER_PATH_ID, UUID.randomUUID()))
+        mockMvc.perform(get(CustomerController.CUSTOMER_PATH_ID, UUID.randomUUID())
+                        .with(BeerControllerTest.jwtRequestPostProcessor))
                 .andExpect(status().isNotFound());
     }
 
@@ -110,6 +119,7 @@ class CustomerControllerTest {
         given(customerService.getById(cust.getId())).willReturn(Optional.of(cust));
 
         mockMvc.perform(get(CustomerController.CUSTOMER_PATH_ID, cust.getId().toString())
+                        .with(BeerControllerTest.jwtRequestPostProcessor)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
@@ -123,6 +133,7 @@ class CustomerControllerTest {
         given(customerService.deleteById(any())).willReturn(true);
 
         mockMvc.perform(delete(CustomerController.CUSTOMER_PATH_ID, cust.getId())
+                        .with(BeerControllerTest.jwtRequestPostProcessor)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNoContent());
 
@@ -142,6 +153,7 @@ class CustomerControllerTest {
         given(customerService.patchById(any(),any())).willReturn(Optional.of(cust));
 
         mockMvc.perform(patch(CustomerController.CUSTOMER_PATH_ID, cust.getId())
+                        .with(BeerControllerTest.jwtRequestPostProcessor)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(customerMap)))
