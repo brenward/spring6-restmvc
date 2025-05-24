@@ -1,0 +1,18 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Spring6RestmvcApplication_localmysql" type="Application" factoryName="Application">
+    <envs>
+      <env name="Dspring.profiles.active" value="localmysql" />
+    </envs>
+    <option name="MAIN_CLASS_NAME" value="com.bwardweb.spring6restmvc.Spring6RestmvcApplication" />
+    <module name="spring6-restmvc" />
+    <extension name="coverage">
+      <pattern>
+        <option name="PATTERN" value="com.bwardweb.spring6restmvc.*" />
+        <option name="ENABLED" value="true" />
+      </pattern>
+    </extension>
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>
